@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Perceptual Loss for Limited Capacity Networks</title>
+        <link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/main.css">
+    </head>
+    <body>
+        <nav> 
+            <ul>
+                <li><a href="">Code</a></li>
+                <li><a href="">Paper</a></li>
+            </ul>
+
+        </nav>
+        <div class="container">
+            <div class="blurb">
+                <h1>Using a Neural Network Codec Approximation Loss to Improve Source Separation Task Performance in Limited Capacity Networks</h1>
+                <h3>Ishwarya Ananthabhotla<sup>1</sup>, Sebastian Ewert<sup>2</sup>, Joseph Paradiso<sup>1</sup>
+                </h3>
+
+                <h2 style="text-align:center"> Summary </h2>
+                    <p>A growing need for on-device machine learning has lead to research efforts dedicated to light-weight, limited capacity neural networks.  However, any approach to designing small-scale networks results in a tradeoff between model capacity and performance that must be optimized.  In this work, we consider a psychoacoustically motivated objective function first presented in our prior work, and adapt it to two audio source separation tasks.  We demonstrate an improvement in performance for small-scale networks via listening tests, characterize the behavior of the codec-emulating loss network more thoroughly, and quantify the relationship between the performance gain and model capacity.  Our work suggests the potential for and deeper explorations in incorporating perceptual principles into objective functions for audio neural networks.</p>
+
+
+                    <h2 style="text-align:center"> Audio Samples Comparing Baseline and Loss at Different Model Capacities</h2>
+                     <table style="width:80%; margin: 0px auto;">
+                        <tr>
+                            <th></th>
+                            <th>Speech Denoising Sample 1 - Baseline</th>
+                            <th>Speech Denoising Sample 1 - Loss</th>
+                            <th>Speech Denoising Sample 2 - Baseline</th>
+                            <th>Speech Denoising Sample 2 - Loss</th>
+                        </tr>
+                         <tr style="text-align: center;">
+                            <td>P1</td>
+                            
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_1_LOSS_baseline/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_1_LOSS_B/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_1_LOSS_baseline/unet-results/y_predicted/p237_215.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_1_LOSS_B/unet-results/y_predicted/p237_215.wav.wav">
+                                </audio>
+                            </td>
+
+
+                        </tr>
+                        <tr style="text-align: center;">
+                            <td>P2</td>
+                            
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_2_LOSS_baseline/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_2_LOSS_B/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_2_LOSS_baseline/unet-results/y_predicted/p237_215.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_2_LOSS_B/unet-results/y_predicted/p237_215.wav.wav">
+                                </audio>
+                            </td>
+
+                        </tr>
+
+
+                        <tr style="text-align: center;">
+                            <td>P3</td>
+                            
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_4_LOSS_baseline/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_4_LOSS_B/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_4_LOSS_baseline/unet-results/y_predicted/p237_215.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_1_4_LOSS_B/unet-results/y_predicted/p237_215.wav.wav">
+                                </audio>
+                            </td>
+
+                        </tr>
+
+                        <tr style="text-align: center;">
+                            <td>P4</td>
+                            
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_2_LOSS_baseline/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_2_LOSS_B/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_2_LOSS_baseline/unet-results/y_predicted/p237_215.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_2_LOSS_B/unet-results/y_predicted/p237_215.wav.wav">
+                                </audio>
+                            </td>
+
+
+                        </tr>
+
+                        <tr style="text-align: center;">
+                            <td>P5</td>
+                            
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_4_LOSS_baseline/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_4_LOSS_B/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_4_LOSS_baseline/unet-results/y_predicted/p237_215.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_4_LOSS_B/unet-results/y_predicted/p237_215.wav.wav">
+                                </audio>
+                            </td>
+
+
+                        </tr>
+
+                    </table> 
+
+
+
+
+                    <table style="width:80%; margin: 0px auto;">
+                        <tr>
+                            <th></th>
+                            <th>Vocal Separation Sample 1 - Baseline</th>
+                            <th>Vocal Separation Sample 1 - Loss</th>
+                            <th>Vocal Separation Sample 2 - Baseline</th>
+                            <th>Vocal Separation Sample 2 - Loss</th>
+                        </tr>
+                         <tr style="text-align: center;">
+                            <td>P1</td>
+                            
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/2-1-ba]Lyndsey Ollard - Catching Up.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/2-1-B]Lyndsey Ollard - Catching Up.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/2-1-ba]Sambasevam Shanmugam - Kaathaadi.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/2-1-B]Sambasevam Shanmugam - Kaathaadi.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+
+                        </tr>
+                        <tr style="text-align: center;">
+                            <td>P2</td>
+                            
+
+                           <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/2-4-ba]Lyndsey Ollard - Catching Up.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/2-4-B]Lyndsey Ollard - Catching Up.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/2-4-ba]Sambasevam Shanmugam - Kaathaadi.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/2-4-B]Sambasevam Shanmugam - Kaathaadi.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+                        </tr>
+
+
+                        <tr style="text-align: center;">
+                            <td>P3</td>
+                            
+
+                           <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/3-2-ba]Lyndsey Ollard - Catching Up.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/3-2-B]Lyndsey Ollard - Catching Up.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/3-2-ba]Sambasevam Shanmugam - Kaathaadi.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/3-2-B]Sambasevam Shanmugam - Kaathaadi.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+                        </tr>
+
+                        <tr style="text-align: center;">
+                            <td>P4</td>
+                            
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/4-2-ba]Lyndsey Ollard - Catching Up.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/4-2-B]Lyndsey Ollard - Catching Up.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/4-2-ba]Sambasevam Shanmugam - Kaathaadi.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/4-2-B]Sambasevam Shanmugam - Kaathaadi.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+
+                        </tr>
+
+                        <tr style="text-align: center;">
+                            <td>P5</td>
+                            
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/6-16-ba]Lyndsey Ollard - Catching Up.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/6-16-B]Lyndsey Ollard - Catching Up.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/6-16-ba]Sambasevam Shanmugam - Kaathaadi.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-voice/media/icassp_inv/6-16-B]Sambasevam Shanmugam - Kaathaadi.stem.mp4.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+
+                        </tr>
+
+                    </table> 
+
+
+
+
+
+
+
+
+
+                     <h2 style="text-align:center"> Characterizing the Loss Network for More Efficient Computation</h2>
+                     <table style="width:80%; margin: 0px auto;">
+                        <tr>
+                            <th></th>
+                            <th>Speech Denoising Sample 1</th>
+                            <th>Speech Denoising Sample 2</th>
+                            <th>Speech Denoising Sample 3</th>
+                        </tr>
+                        <tr style="text-align: center;">
+                            <td>Baseline</td>
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_baseline/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_baseline/unet-results/y_predicted/p263_053.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_baseline/unet-results/y_predicted/p237_089.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                        </tr>
+                         <tr style="text-align: center;">
+                            <td>Model A</td>
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_B/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_B/unet-results/y_predicted/p263_053.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_B/unet-results/y_predicted/p237_089.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                        </tr>
+                        <tr style="text-align: center;">
+                            <td>Model B</td>
+                           <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_C/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_C/unet-results/y_predicted/p263_053.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_C/unet-results/y_predicted/p237_089.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                        </tr>
+
+
+                        <tr style="text-align: center;">
+                            <td>Model C</td>
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_D/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_D/unet-results/y_predicted/p263_053.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_D/unet-results/y_predicted/p237_089.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                        </tr>
+
+                        <tr style="text-align: center;">
+                            <td>Model D</td>
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_E/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_E/unet-results/y_predicted/p263_053.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_E/unet-results/y_predicted/p237_089.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                        </tr>
+
+                        <tr style="text-align: center;">
+                            <td>Model E</td>
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_F/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_F/unet-results/y_predicted/p263_053.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_F/unet-results/y_predicted/p237_089.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                        </tr>
+
+                        <tr style="text-align: center;">
+                            <td>Model F</td>
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_G/unet-results/y_predicted/p234_029.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_G/unet-results/y_predicted/p263_053.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                            <td>
+                                <audio controls="controls">
+                                    <source src="http://audio-mafia.media.mit.edu/perceptual-loss-speech/media/FINAL__22050_LOW_SNR/SOURCE_2_1_LOSS_G/unet-results/y_predicted/p237_089.wav.wav" type="audio/wav">
+                                </audio>
+                            </td>
+
+                        </tr>
+
+                    </table> 
+
+                    
+
+            </div><!-- /.blurb -->
+        </div><!-- /.container -->
+        <footer>
+            <ul><li>
+                <sup>1</sup>Responsive Environments, MIT Media Lab; <sup>2</sup>Spotify, Inc. 
+                </li>
+                </br>
+                <li>Submitted to the International Conference on Acoustics, Speech, and Signal Processing 2020.</li>
+            </ul>
+            
+        </footer>
+    </body>
+</html>
